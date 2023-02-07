@@ -1,4 +1,6 @@
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import (
+    SocketIO, send, emit, join_room, leave_room
+)
 
 socketio = SocketIO()
 
@@ -7,3 +9,21 @@ socketio = SocketIO()
 def handle_message(message):
     print(message)
     send(message, broadcast=True)
+
+
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    print("join")
+    join_room(room)
+    send(username + ' has entered the room.', to=room)
+
+
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    print("left")
+    leave_room(room)
+    send(username + ' has left the room.', to=room)
