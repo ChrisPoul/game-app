@@ -1,13 +1,14 @@
 from flask_socketio import (
     SocketIO, send, emit, join_room, leave_room
 )
+from .models.message import Message
 
 socketio = SocketIO()
 
 
 @socketio.on("message")
 def handle_message(message):
-    print(message)
+    Message(contents=message).add()
     send(message, broadcast=True)
 
 
